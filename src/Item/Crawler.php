@@ -48,6 +48,57 @@ class Crawler {
     }
 
     /**
+     * Get the type of the item
+     * @return string
+     */
+    public function getType()
+    {
+        $skus = $this->getSkus();
+        if(count($skus) == 1){
+            return "simple";
+        } else {
+            return "configurable";
+        }
+    }
+
+    /**
+     * Get the Image of a SKU
+     * @param Sku $sku
+     * @return string
+     */
+    public function getSkuImage(Sku $sku)
+    {
+        $id = $sku->id;
+        $imageQuery = $this->xPath->query("//a[@data-sku-id='$id']/img/@bigpic");
+        return $imageQuery->item(0)->textContent;
+    }
+
+    /**
+     * Get the different Skus of the item
+     * @return Sku[]
+     */
+    public function getSkus()
+    {
+        if(!is_null($this->skus)){
+            return $this->skus;
+        }
+        $skus = [];
+        $skuMatches = [];
+        preg_match('/var skuProducts=(\[.*\]);/', $this->html, $skuMatches);
+        if(count($skuMatches) == 2){
+            $json = $skuMatches[1];
+            $codedSkus = json_decode($json);
+            foreach($codedSkus as $codedSku){
+                $skus[] = new Sku($codedSku);
+            }
+        }
+        $this->skus = $skus;
+        return $skus;
+    }
+    /** @var Sku[] Do not fetch them more than once*/
+    private $skus = null;
+
+    /**
      * Get the ID of the item
      * @return string
      */
