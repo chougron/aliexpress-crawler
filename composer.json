@@ -1,5 +1,5 @@
 {
-    "name": "chougron/aliexpresss-crawler",
+    "name": "chougron/aliexpress-crawler",
     "description": "Get item information from aliexpress website",
     "type": "library",
     "authors": [
