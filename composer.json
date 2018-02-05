@@ -1,0 +1,14 @@
+{
+    "name": "chougron/aliexpresss-crawler",
+    "description": "Get item information from aliexpress website",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Camille Hougron",
+            "email": "camille.hougron@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.*"
+    }
+}
