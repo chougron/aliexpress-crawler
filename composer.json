@@ -2,6 +2,7 @@
     "name": "chougron/aliexpress-crawler",
     "description": "Get item information from aliexpress website",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Camille Hougron",
