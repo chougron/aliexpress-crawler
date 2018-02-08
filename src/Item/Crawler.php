@@ -6,7 +6,7 @@ class Crawler {
     /**
      * @var string
      */
-    protected $url;
+    protected $_url;
     /**
      * @var string
      */
@@ -22,7 +22,7 @@ class Crawler {
 
     public function __construct($url)
     {
-        $this->url = $url;
+        $this->_url = $url;
     }
 
     /**
@@ -33,7 +33,7 @@ class Crawler {
     {
         try{
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $this->url);
+            curl_setopt($ch, CURLOPT_URL, $this->_url);
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
             $this->html = curl_exec($ch);
@@ -68,10 +68,16 @@ class Crawler {
      */
     public function getSkuImage(Sku $sku)
     {
+        if(!is_null($this->skuImage)){
+            return $this->skuImage;
+        }
         $id = $sku->id;
         $imageQuery = $this->xPath->query("//a[@data-sku-id='$id']/img/@bigpic");
-        return $imageQuery->item(0)->textContent;
+        $this->skuImage = $imageQuery->item(0)->textContent;
+        return $this->skuImage;
     }
+    /** @var string Do not fetch it more than once*/
+    private $skuImage = null;
 
     /**
      * Get the different Skus of the item
@@ -104,9 +110,15 @@ class Crawler {
      */
     public function getId()
     {
+        if(!is_null($this->id)){
+            return $this->id;
+        }
         $idQuery = $this->xPath->query("//input[@name='objectId']/@value");
-        return $idQuery->item(0)->textContent;
+        $this->id = $idQuery->item(0)->textContent;
+        return $this->id;
     }
+    /** @var string Do not fetch more than once*/
+    private $id = null;
 
     /**
      * Get the URL of the item
@@ -114,9 +126,15 @@ class Crawler {
      */
     public function getUrl()
     {
+        if(!is_null($this->url)){
+            return $this->url;
+        }
         $urlQuery = $this->xPath->query("//link[@rel='canonical']/@href");
-        return $urlQuery->item(0)->textContent;
+        $this->url = $urlQuery->item(0)->textContent;
+        return $this->url;
     }
+    /** @var string Do not fetch more than once*/
+    private $url = null;
 
     /**
      * Get the URL of the gallery images
@@ -124,6 +142,9 @@ class Crawler {
      */
     public function getGalleryImages()
     {
+        if(!is_null($this->galleryImgs)){
+            return $this->galleryImgs;
+        }
         $galleryImgs = [];
         $galleryImgMatches = [];
         preg_match('/window\.runParams\.imageBigViewURL=\[(.*)\];/is', $this->html, $galleryImgMatches);
@@ -134,8 +155,11 @@ class Crawler {
                 $galleryImgs[] = trim($galleryImg);
             }
         }
+        $this->galleryImgs = $galleryImgs;
         return $galleryImgs;
     }
+    /** @var string[] Do not fetch more than once*/
+    private $galleryImgs = null;
 
     /**
      * Get the name of the item
@@ -143,9 +167,15 @@ class Crawler {
      */
     public function getName()
     {
+        if(!is_null($this->name)){
+            return $this->name;
+        }
         $nameQuery =  $this->xPath->query("//h1[@class='product-name']");
-        return $nameQuery->item(0)->textContent;
+        $this->name = $nameQuery->item(0)->textContent;
+        return $this->name;
     }
+    /** @var string Do not fetch more than once*/
+    private $name = null;
 
     /**
      * Get the name of the shop
@@ -153,9 +183,15 @@ class Crawler {
      */
     public function getShopName()
     {
+        if(!is_null($this->shopName)){
+            return $this->shopName;
+        }
         $shopNameQuery = $this->xPath->query("//span[@class='shop-name']/a");
-        return $shopNameQuery->item(0)->textContent;
+        $this->shopName = $shopNameQuery->item(0)->textContent;
+        return $this->shopName;
     }
+    /** @var string Do not fetch more than once*/
+    private $shopName = null;
 
     /**
      * Get the URL of the shop
@@ -163,10 +199,15 @@ class Crawler {
      */
     public function getShopUrl()
     {
-
+        if(!is_null($this->shopUrl)){
+            return $this->shopUrl;
+        }
         $shopUrlQuery = $this->xPath->query("//span[@class='shop-name']/a/@href");
-        return 'https:'.$shopUrlQuery->item(0)->textContent;
+        $this->shopUrl = 'https:'.$shopUrlQuery->item(0)->textContent;
+        return $this->shopUrl;
     }
+    /** @var string Do not fetch more than once*/
+    private $shopUrl = null;
 
     /**
      * Get the description of the item
@@ -174,6 +215,9 @@ class Crawler {
      */
     public function getDescription()
     {
+        if(!is_null($this->description)){
+            return $this->description;
+        }
         $description = "";
         $descUrlMatches = [];
         preg_match('/window\.runParams\.detailDesc="(.*)"/', $this->html, $descUrlMatches);
@@ -181,8 +225,11 @@ class Crawler {
             $descUrl = $descUrlMatches[1];
             $description = file_get_contents($descUrl);
         }
+        $this->description = $description;
         return $description;
     }
+    /** @var string Do not fetch more than once*/
+    private $description = null;
 
     /**
      * Get the cost of the item
@@ -190,12 +237,18 @@ class Crawler {
      */
     public function getCost()
     {
+        if(!is_null($this->cost)){
+            return $this->cost;
+        }
         $cost = "";
         $costMatches = [];
         preg_match('/window\.runParams\.actMinPrice="(.*)"/', $this->html, $costMatches);
         if(count($costMatches) == 2){
             $cost = $costMatches[1];
         }
+        $this->cost = $cost;
         return $cost;
     }
+    /** @var string Do not fetch more than once*/
+    private $cost = null;
 }
