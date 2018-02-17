@@ -251,4 +251,25 @@ class Crawler {
     }
     /** @var string Do not fetch more than once*/
     private $cost = null;
+
+    /**
+     * Get the max cost of the item
+     * @return mixed|string
+     */
+    public function getMaxCost()
+    {
+        if(!is_null($this->maxCost)){
+            return $this->maxCost;
+        }
+        $cost = "";
+        $costMatches = [];
+        preg_match('/window\.runParams\.actMaxPrice="(.*)"/', $this->html, $costMatches);
+        if(count($costMatches) == 2){
+            $cost = $costMatches[1];
+        }
+        $this->maxCost = $cost;
+        return $cost;
+    }
+    /** @var string Do not fetch more than once*/
+    private $maxCost = null;
 }

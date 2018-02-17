@@ -35,6 +35,9 @@ Returns the description of the item
 ### `getCost() : string`
 Returns the cost of the item
 
+### `getMaxCost() : string`
+Returns the maximum cost of the item
+
 ### `getType() : string`
 Returns the type of the item. **simple** if there is no variation or **configurable** if there are some.
 
