@@ -68,16 +68,10 @@ class Crawler {
      */
     public function getSkuImage(Sku $sku)
     {
-        if(!is_null($this->skuImage)){
-            return $this->skuImage;
-        }
         $id = $sku->id;
         $imageQuery = $this->xPath->query("//a[@data-sku-id='$id']/img/@bigpic");
-        $this->skuImage = $imageQuery->item(0)->textContent;
-        return $this->skuImage;
+        return $imageQuery->item(0)->textContent;
     }
-    /** @var string Do not fetch it more than once*/
-    private $skuImage = null;
 
     /**
      * Get the different Skus of the item
