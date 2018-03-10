@@ -62,3 +62,10 @@ The price of the Sku
 
 #### `quantity : string`
 The quantity remaining for the Sku
+
+## Tests
+
+To launch the tests, you need to install the vendors with composer, and then you can use the following command :
+```
+./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/
+```
