@@ -74,6 +74,35 @@ class Crawler {
     }
 
     /**
+     * Get the different models of the skus
+     * @return string[]
+     */
+    public function getModelList()
+    {
+        if(!is_null($this->modelList)){
+            return $this->modelList;
+        }
+        $models = [];
+        $modelListQuery = $this->xPath->query("//li[@class='item-sku-image']/a");
+        foreach($modelListQuery as $modelElement){
+            foreach($modelElement->attributes as $attribute)
+            {
+                if($attribute->name == "data-sku-id"){
+                    $id = $attribute->value;
+                }
+                if($attribute->name == "title"){
+                    $name = $attribute->value;
+                }
+            }
+            $models[$id] = $name;
+        }
+        $this->modelList = $models;
+        return $models;
+    }
+    /** @var string[] Do not fetch them more than once*/
+    private $modelList = null;
+
+    /**
      * Get the different Skus of the item
      * @return Sku[]
      */
@@ -89,7 +118,7 @@ class Crawler {
             $json = $skuMatches[1];
             $codedSkus = json_decode($json);
             foreach($codedSkus as $codedSku){
-                $skus[] = new Sku($codedSku);
+                $skus[] = new Sku($codedSku, $this->getModelList());
             }
         }
         $this->skus = $skus;

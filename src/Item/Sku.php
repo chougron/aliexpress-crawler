@@ -8,16 +8,11 @@ class Sku {
     public $qty;
     public $model = null;
 
-    public function __construct($object)
+    public function __construct($object, $modelList)
     {
         $this->id = $object->skuPropIds;
-        $this->price = $object->skuVal->actSkuCalPrice;
+        $this->price = $object->skuVal->actSkuCalPrice ? $object->skuVal->actSkuCalPrice : $object->skuVal->skuCalPrice;
         $this->qty = $object->skuVal->availQuantity;
-
-        if($object->skuAttr){
-            //skuAttr is in the form "14:10#3124B" with model being 3124B
-            $exploded = explode("#", $object->skuAttr);
-            $this->model = count($exploded) == 2 ? $exploded[1] : null;
-        }
+        $this->model = $modelList[$this->id];
     }
 }
