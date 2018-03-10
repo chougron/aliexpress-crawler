@@ -130,6 +130,9 @@ class Crawler
                     $name = $attribute->value;
                 }
             }
+            if($name == ""){
+                $name = $id;
+            }
             $models[$id] = $name;
         }
         $this->modelList = $models;
