@@ -119,7 +119,8 @@ class Crawler
             return $this->modelList;
         }
         $models = [];
-        $modelListQuery = $this->xPath->query("//li[@class='item-sku-image']/a");
+        $modelListQuery = $this->xPath->query("//ul[@class='sku-attr-list util-clearfix']/li/a");
+        $name = "";
         foreach($modelListQuery as $modelElement){
             foreach($modelElement->attributes as $attribute)
             {
